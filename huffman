@@ -2,7 +2,7 @@
 // Name        : Huffman Algorithm.cpp
 // Author      : Rafat Hasan
 // Version     :
-// Copyright   : Free to Use
+// Copyright   : GPLv3
 // Description : HuffmanAlgorithm in C++, Ansi-style
 //============================================================================
 
@@ -402,7 +402,6 @@ public:
         a=0;
       }
     }
-
   }
   void BinaryFileBugPatch(string dest){
     string str,temp;

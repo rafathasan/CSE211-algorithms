@@ -2,7 +2,7 @@
 // Name        : Longest Common Subsequence.cpp
 // Author      : Rafat Hasan
 // Version     :
-// Copyright   : Free to Use
+// Copyright   : GPLv3
 // Description : LCS in C++, Ansi-style
 //============================================================================
 
@@ -11,9 +11,7 @@
 using namespace std;
 
 void mapping(int**&, char**&, string*, int, int);
-
 void print(char**&, string*, int, int);
-
 
 int main(){
     int** ary;
@@ -51,10 +49,7 @@ int main(){
         }
         cout<<endl;
     }
-
     mapping(ary, sign, words, x, y);
-
-
 
     for(int i=0; i<x+1;i++){
         for(int j=0; j<y+1;j++){
@@ -62,11 +57,7 @@ int main(){
         }
         cout<<endl;
     }
-
     print(sign, words, x, y);
-
-
-
     return 0;
 }
 

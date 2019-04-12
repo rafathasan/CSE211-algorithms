@@ -2,7 +2,7 @@
 // Name        : Prim's MST.cpp
 // Author      : Rafat Hasan
 // Version     :
-// Copyright   : Free to Use
+// Copyright   : GPLv3
 // Description : Prim's MST in C++, Ansi-style
 //============================================================================
 
@@ -35,7 +35,6 @@ struct Vector{
 	Vector(int val){
 		ary = new int[val];
 	}
-
 };
 
 int main(){
@@ -54,7 +53,6 @@ int main(){
     display(matrix,n,max(matrix,n));
     primsMST(matrix, n);
     return 0;
-
 }
 
 void primsMST(int** X, int s){
@@ -95,8 +93,7 @@ for (int i = 0; i < s; i++)
 return min_index;
 }
 
-int printMST(int* parent, int s, int** X)
-{
+int printMST(int* parent, int s, int** X){
 cout<<"Edge \tWeight"<<endl;
 for (int i = 1; i < s; i++)
     cout<<parent[i]<<" - "<<i<<"\t"<<X[i][parent[i]]<<endl;
@@ -136,14 +133,11 @@ void populate(int** X,int s,int low,int high,int parcentage){
         }
 
       }
-
     }
-
     if(count==(int)estimated_edges)
         break;
     count=0;
    }
-
 }
 
 int max(int** X, int s){

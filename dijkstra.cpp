@@ -2,7 +2,7 @@
 // Name        : Dijkstra.cpp
 // Author      : Rafat Hasan
 // Version     :
-// Copyright   : Free to Use
+// Copyright   : GPLv3
 // Description : Dijkstra in C++, Ansi-style
 //============================================================================
 
@@ -66,7 +66,6 @@ int main(){
         }
     }while(ch!=3);
     return 0;
-
 }
 
 void allocate(int** &matrix, int sz){
@@ -85,7 +84,7 @@ void populate(int** matrix,int s,int low,int high,int parcentage){
  if((estimated_edges-(int)estimated_edges)>=0.50)estimated_edges=(int)estimated_edges+1;
 
 
- cout<<"Your "<<parcentage<<"% densely graph is creating..........";
+ cout<<"Please Wait..........";
  while(true){
    srand(time(0));
    for(int i=0;i<s;i++){
@@ -108,16 +107,12 @@ void populate(int** matrix,int s,int low,int high,int parcentage){
                 matrix[i][j]=-1;
             }
         }
-
       }
-
     }
     if(count==(int)estimated_edges)
     break;
    count=0;
-
    }
-
 }
 
 
@@ -146,7 +141,6 @@ void display(int** matrix,int s,int mx){
       }
       cout<<endl;
   }
-
 }
 
 void select(int& s,int& d,int n){
@@ -163,27 +157,22 @@ void select(int& s,int& d,int n){
     cin>>s;
     cout<<"Enter destination node :";
     cin>>d;
-
     }
-
     s=s-1;
     d=d-1;
-
 }
 
 void randomized(int& s,int& d,int n){
 
- srand(time(0));
- s=rand()%n;
- while(true){
+    srand(time(0));
+    s=rand()%n;
+    while(true){
     srand(time(0));
     d=rand()%n;
     if(d!=s){
         break;
     }
- }
-
-
+    }
 }
 
 
@@ -223,10 +212,10 @@ for(int i=0;i<n;i++){
     }
 }
 
-if (found==false){
-    cout<<"Destination from "<<s+1<<" to Source"<<d+1<<endl;
-    cout<<"There is no path"<<endl;
-}
+    if (found==false){
+        cout<<"Destination from "<<s+1<<" to Source"<<d+1<<endl;
+        cout<<"There is no path"<<endl;
+    }
 
 }
 
@@ -234,14 +223,12 @@ int minVertex(Vertex* Vertex,int n){
         int minVertex=-1;
 
         for(int i=0;i<n;i++){
-              if(!Vertex[i].flag && (minVertex==-1||(Vertex[i].cost>=0 && Vertex[minVertex].cost==-1) ||(Vertex[i].cost>=0 && Vertex[minVertex].cost>=0 && Vertex[i].cost<=Vertex[minVertex].cost))){
+              if(!Vertex[i].flag && (minVertex==-1||(Vertex[i].cost>=0 && Vertex[minVertex].cost==-1) 
+                ||(Vertex[i].cost>=0 && Vertex[minVertex].cost>=0 && Vertex[i].cost<=Vertex[minVertex].cost))){
                 minVertex=i;
             }
         }
         return minVertex;
-
-
-
 
 }
 
@@ -263,9 +250,7 @@ while(true){
         if(a==s){
             break;
         }
-
 }
-
 
 cout<<"path: ";
 for (vector<int>::iterator it = p.begin(); it != p.end(); it++)
@@ -273,6 +258,3 @@ for (vector<int>::iterator it = p.begin(); it != p.end(); it++)
 
       cout<<d+1<<endl;
 }
-
-
-

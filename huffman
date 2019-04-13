@@ -6,315 +6,309 @@
 // Description : HuffmanAlgorithm(Array Based) in C++, Ansi-style
 //============================================================================
 #include <iostream>
+
 #include <fstream>
+
 using namespace std;
 
-struct Row{
-    string c;   //represent Binary Code also letter combination
-    int i;      //represent letter also frequency
+struct Row {
+  string c; //represent Binary Code also letter combination
+  int i; //represent letter also frequency
 };
 
-void initialize_tables(int* feq, Row*& feqRows, int ansii, int& h);
-void initialize_feq(int*, int);
-void populateFeq(int*);
-void constructBinaryTable(Row*, int, string*&, int ansii);
-void addString(string*&, string , char );
-int max(Row* A, int s);
+void initialize_tables(int * feq, Row * & feqRows, int ansii, int & h);
+void initialize_feq(int * , int);
+void populateFeq(int * );
+void constructBinaryTable(Row * , int, string * & , int ansii);
+void addString(string * & , string, char);
+int max(Row * A, int s);
 int num_dig(int);
 int i_th_dig(int, int);
-void counting_sort(Row* A, int s, int i);
-void radix_sort(Row* A,int s);
-int findMin(Row* ary, int s, int ignore);
-void encodeText(string*);
-void decodeText(Row*, int, int);
-int isMatched(Row*, int, string, int);
+void counting_sort(Row * A, int s, int i);
+void radix_sort(Row * A, int s);
+int findMin(Row * ary, int s, int ignore);
+void encodeText(string * );
+void decodeText(Row * , int, int);
+int isMatched(Row * , int, string, int);
 bool isEqual(string x, string y);
-void shortenHuffTree(string* huffTree, int ansii, int t, Row*& arr);
-void writeMetaData(int* feq, int ansii,Row* srtTable, int t);
-void readMetaData(Row* srtTable, int& t);
+void shortenHuffTree(string * huffTree, int ansii, int t, Row * & arr);
+void writeMetaData(int * feq, int ansii, Row * srtTable, int t);
+void readMetaData(Row * srtTable, int & t);
 
+int main() {
+  const int ansii = 128;
+  int * feq = new int[128]; //letter frequency Table
+  Row * feqRows; //Main Array (Heap Tree)
+  string * huffTable = new string[ansii]; //Binary Code table
+  int t; //Distinct letter size
 
-int main(){
-    const int ansii = 128;
-    int* feq = new int[128];                        //letter frequency Table
-    Row* feqRows;                                   //Main Array (Heap Tree)
-    string* huffTable = new string[ansii];          //Binary Code table
-    int t;                                          //Distinct letter size
+  initialize_feq(feq, ansii);
+  populateFeq(feq);
+  initialize_tables(feq, feqRows, ansii, t);
 
-    initialize_feq(feq, ansii);
-    populateFeq(feq);
-    initialize_tables(feq, feqRows, ansii, t);
+  radix_sort(feqRows, t);
 
-    radix_sort(feqRows, t);
+  constructBinaryTable(feqRows, t, huffTable, ansii);
+  encodeText(huffTable);
 
-    constructBinaryTable(feqRows, t, huffTable, ansii);
-    encodeText(huffTable);
+  Row * srtTable = new Row[t];
+  shortenHuffTree(huffTable, ansii, t, srtTable);
+  decodeText(srtTable, ansii, t);
+  writeMetaData(feq, ansii, srtTable, t);
 
-    Row* srtTable = new Row[t];
-    shortenHuffTree(huffTable, ansii, t, srtTable);
-    decodeText(srtTable, ansii, t);
-    writeMetaData( feq, ansii, srtTable, t);
+  readMetaData(srtTable, t);
+  decodeText(srtTable, ansii, t);
 
-    readMetaData(srtTable, t);
-    decodeText(srtTable, ansii, t);
-
-    return 0;
+  return 0;
 }
 
-void shortenHuffTree(string* huffTree, int ansii, int t, Row*& arr){
-    int c=0;
-    for (int i = 0; i < ansii; ++i){
-        if(huffTree[i][0] != '\0'){
-            arr[c].i = i;
-            arr[c].c = huffTree[i];
-            c++;
-        }
+void shortenHuffTree(string * huffTree, int ansii, int t, Row * & arr) {
+  int c = 0;
+  for (int i = 0; i < ansii; ++i) {
+    if (huffTree[i][0] != '\0') {
+      arr[c].i = i;
+      arr[c].c = huffTree[i];
+      c++;
     }
+  }
 }
 
-void writeMetaData(int* feq, int ansii,Row* srtTable, int t){
-    ofstream out("frequency.txt");
-    if(out.is_open()) {
-        out<<"Letter Frequency Chart\n";
-        out<<"-----------------------\n";
-        for (int i = 0; i < ansii; ++i){
-            if(feq[i]>0)
-                out<<(char)i<<"    =>    "<<feq[i]<<"\n";
-        }
-                                                    //writing binary char by char
+void writeMetaData(int * feq, int ansii, Row * srtTable, int t) {
+  ofstream out("frequency.txt");
+  if (out.is_open()) {
+    out << "Letter Frequency Chart\n";
+    out << "-----------------------\n";
+    for (int i = 0; i < ansii; ++i) {
+      if (feq[i] > 0)
+        out << (char) i << "    =>    " << feq[i] << "\n";
     }
-    if(out.fail())                                  //checking access and end of file
-        cout << "error reading decoded.txt" << endl;
-    out.close();
+    //writing binary char by char
+  }
+  if (out.fail()) //checking access and end of file
+    cout << "error reading decoded.txt" << endl;
+  out.close();
 
-    out.open("codeTable.txt");
-    if(out.is_open()) {
-        out<<"Huffman Code Table\n";
-        out<<"------------------\n";
-        for (int i = 0; i < t; ++i){
-            out<<(char)srtTable[i].i<<"    =>    "<<srtTable[i].c<<"\n";
-        }
-                                                    //writing binary char by char
+  out.open("codeTable.txt");
+  if (out.is_open()) {
+    out << "Huffman Code Table\n";
+    out << "------------------\n";
+    for (int i = 0; i < t; ++i) {
+      out << (char) srtTable[i].i << "    =>    " << srtTable[i].c << "\n";
     }
-    if(out.fail())                                  //checking access and end of file
-        cout << "error reading decoded.txt" << endl;
-    out.close();
+    //writing binary char by char
+  }
+  if (out.fail()) //checking access and end of file
+    cout << "error reading decoded.txt" << endl;
+  out.close();
 }
 
-void constructBinaryTable(Row* feqRows, int t, string*& huffTable, int ansii){
+void constructBinaryTable(Row * feqRows, int t, string * & huffTable, int ansii) {
 
-    for (int i = 0; i < ansii; ++i){
-        huffTable[i] = "";
-    }
-    int x,y;                                        //x- 1st lowest index, y- 2nd lowest index
-    for (int i = 0; i < t; ++i){
-        x = findMin(feqRows, t, -1);
-        y = findMin(feqRows, t, x);
+  for (int i = 0; i < ansii; ++i) {
+    huffTable[i] = "";
+  }
+  int x, y; //x- 1st lowest index, y- 2nd lowest index
+  for (int i = 0; i < t; ++i) {
+    x = findMin(feqRows, t, -1);
+    y = findMin(feqRows, t, x);
 
-        addString(huffTable, feqRows[x].c, '1');
+    addString(huffTable, feqRows[x].c, '1');
 
-        feqRows[x].i += feqRows[y].i;
+    feqRows[x].i += feqRows[y].i;
 
-        addString(huffTable, feqRows[y].c, '0');
+    addString(huffTable, feqRows[y].c, '0');
 
-        feqRows[y].i = -1;
-        feqRows[x].c = feqRows[x].c+feqRows[y].c;
-    }
+    feqRows[y].i = -1;
+    feqRows[x].c = feqRows[x].c + feqRows[y].c;
+  }
 }
 
-bool isEqual(string x, string y){
-    bool f = true;
-    bool k = true;
-    for (int i = 0; f&&k; ++i){
-        if(x[i]=='\0') f=false;
-        if(y[i]=='\0') k=false;
-        if(f!=k) return false;
-        if(x[i]!=y[i]) return false;
-    }
-    return true;
+bool isEqual(string x, string y) {
+  bool f = true;
+  bool k = true;
+  for (int i = 0; f && k; ++i) {
+    if (x[i] == '\0') f = false;
+    if (y[i] == '\0') k = false;
+    if (f != k) return false;
+    if (x[i] != y[i]) return false;
+  }
+  return true;
 }
 
-int isMatched(Row* srtTable, int ansii, string str, int t){
-    for (int i = 0; i < t; ++i){
-        //if(isEqual(srtTable[i].c, str)) return i;
-        if(!srtTable[i].c.compare(str)) return srtTable[i].i;
-    }
-    return -1;
+int isMatched(Row * srtTable, int ansii, string str, int t) {
+  for (int i = 0; i < t; ++i) {
+    //if(isEqual(srtTable[i].c, str)) return i;
+    if (!srtTable[i].c.compare(str)) return srtTable[i].i;
+  }
+  return -1;
 }
 
-void decodeText(Row* srtTable, int ansii, int t){
-    ofstream out("decoded.txt");
-    ifstream in("binary.txt");
-    char c;
-    if(in.is_open()&&out.is_open()) {
-        string str="";
-        int val;
-        while(in.good()) {
-            in.get(c);
-            str = str+c;
-            val = isMatched(srtTable, ansii, str, t);
-            if(val != -1){
-                cout<<str<<" - "<<endl;
-                out.put((char)val);
-                str="";
-                val=-1;
-            }                                           //writing binary char by char
-        }
+void decodeText(Row * srtTable, int ansii, int t) {
+  ofstream out("decoded.txt");
+  ifstream in ("binary.txt");
+  char c;
+  if ( in .is_open() && out.is_open()) {
+    string str = "";
+    int val;
+    while ( in .good()) {
+      in .get(c);
+      str = str + c;
+      val = isMatched(srtTable, ansii, str, t);
+      if (val != -1) {
+        cout << str << " - " << endl;
+        out.put((char) val);
+        str = "";
+        val = -1;
+      } //writing binary char by char
     }
-    if(!in.eof() && in.fail() || out.fail())            //checking access and end of file
-        cout << "error reading binary.txt, decoded.txt" << endl;
-    in.close();
+  }
+  if (! in .eof() && in .fail() || out.fail()) //checking access and end of file
+    cout << "error reading binary.txt, decoded.txt" << endl; in .close();
 }
 
-void encodeText(string* huffTable){
-    ofstream out("binary.txt");
-    ifstream in("text.txt");
-    char c;
-    if(in.is_open()&&out.is_open()) {
-        while(in.good()) {
-            in.get(c);
-            out<<huffTable[(int)c];                 //writing binary char by char
-        }
+void encodeText(string * huffTable) {
+  ofstream out("binary.txt");
+  ifstream in ("text.txt");
+  char c;
+  if ( in .is_open() && out.is_open()) {
+    while ( in .good()) {
+      in .get(c);
+      out << huffTable[(int) c]; //writing binary char by char
     }
-    if(!in.eof() && in.fail() || out.fail())        //checking access and end of file
-        cout << "error reading text.txt" << endl;
-    in.close();
+  }
+  if (! in .eof() && in .fail() || out.fail()) //checking access and end of file
+    cout << "error reading text.txt" << endl; in .close();
 }
 
-void addString(string*& ary, string s, char c){
-    string tm;
-    tm += c;
-    for (int i = 0; s[i]!='\0'; ++i){
-        ary[(int)s[i]] = tm+ary[(int)s[i]];
+void addString(string * & ary, string s, char c) {
+  string tm;
+  tm += c;
+  for (int i = 0; s[i] != '\0'; ++i) {
+    ary[(int) s[i]] = tm + ary[(int) s[i]];
 
-    }
+  }
 }
 
-int findMin(Row* ary, int s, int ignore){
-    int min=INT_MAX;
-    int idx = -1;
-    for (int i = 0; i < s; ++i){
-        if(i != ignore ){
-            if(ary[i].i > 0 && min > ary[i].i){
-                min=ary[i].i;
-                idx=i;
-            }
-        }
-    }return idx;
+int findMin(Row * ary, int s, int ignore) {
+  int min = INT_MAX;
+  int idx = -1;
+  for (int i = 0; i < s; ++i) {
+    if (i != ignore) {
+      if (ary[i].i > 0 && min > ary[i].i) {
+        min = ary[i].i;
+        idx = i;
+      }
+    }
+  }
+  return idx;
 }
 
+void populateFeq(int * feq) {
+  ifstream in ("text.txt");
+  char c;
 
-void populateFeq(int* feq) {
-    ifstream in("text.txt");
-    char c;
-
-    if(in.is_open()) {
-        while(in.good()) {
-            in.get(c);
-            feq[(int)c]++;                      //reading char by char and incrementing frequency table
-        }
+  if ( in .is_open()) {
+    while ( in .good()) {
+      in .get(c);
+      feq[(int) c]++; //reading char by char and incrementing frequency table
     }
-    if(!in.eof() && in.fail())                  //checking access and end of file
-        cout << "error reading text.txt" << endl;
-    in.close();
+  }
+  if (! in .eof() && in .fail()) //checking access and end of file
+    cout << "error reading text.txt" << endl; in .close();
 }
 
-void initialize_tables(int* feq, Row*& feqRows, int ansii, int& h){
-    int c=0;
-    for(int i=0; i<ansii; ++i){
-        if(feq[i]>0)
-            c++;
-    }
+void initialize_tables(int * feq, Row * & feqRows, int ansii, int & h) {
+  int c = 0;
+  for (int i = 0; i < ansii; ++i) {
+    if (feq[i] > 0)
+      c++;
+  }
 
-    feqRows = new Row[c];
+  feqRows = new Row[c];
 
-    h=0;
-    for(int i=0; i<ansii; ++i){
-        if(feq[i]>0){
-            feqRows[h].c = (char)i;
-            feqRows[h].i = feq[i];
-            h++;
-        }
+  h = 0;
+  for (int i = 0; i < ansii; ++i) {
+    if (feq[i] > 0) {
+      feqRows[h].c = (char) i;
+      feqRows[h].i = feq[i];
+      h++;
     }
+  }
 }
 
-void readMetaData(Row* srtTable, int& t){
-    ifstream in("codeTable.txt");
-    string dump;
-    getline(in, dump);
-    getline(in, dump);
-    while (getline(in, dump))
-        t++;
+void readMetaData(Row * srtTable, int & t) {
+  ifstream in ("codeTable.txt");
+  string dump;
+  getline( in , dump);
+  getline( in , dump);
+  while (getline( in , dump))
+    t++;
 
-    t = t/2;
-    srtTable = new Row[t];
-    in.seekg(0, std::ios::beg);
-    getline(in, dump);
-    getline(in, dump);
-    int c=0;
-    if(in.is_open()) {
-        while(in.good()) {
-            in>>srtTable[c].i;
-            in>>dump;
-            in>>srtTable[c].c;
-            c++;
-        }
+  t = t / 2;
+  srtTable = new Row[t]; in .seekg(0, std::ios::beg);
+  getline( in , dump);
+  getline( in , dump);
+  int c = 0;
+  if ( in .is_open()) {
+    while ( in .good()) {
+      in >> srtTable[c].i; in >> dump; in >> srtTable[c].c;
+      c++;
     }
-    if(!in.eof() && in.fail())            //checking access and end of file
-        cout << "error reading codeTable.txt" << endl;
-    in.close();
+  }
+  if (! in .eof() && in .fail()) //checking access and end of file
+    cout << "error reading codeTable.txt" << endl; in .close();
 
 }
 
-void initialize_feq(int* feq, int ansii){
-    for(int i=0; i<ansii; ++i)
-        feq[i]=0;
+void initialize_feq(int * feq, int ansii) {
+  for (int i = 0; i < ansii; ++i)
+    feq[i] = 0;
 }
 
-int i_th_dig(int n, int k){
-    for(int i=1;i<k;++i)n/=10;
-    return n%10;
+int i_th_dig(int n, int k) {
+  for (int i = 1; i < k; ++i) n /= 10;
+  return n % 10;
 }
 
-int num_dig(int n){
-  if(n<10)return 1;
-  return 1+num_dig(n/10);
+int num_dig(int n) {
+  if (n < 10) return 1;
+  return 1 + num_dig(n / 10);
 }
 
-int max(Row* A, int s){
-    int mx=A[0].i;
-    for(int i=1;i<s;++i){
-        if(A[i].i>mx)mx=A[i].i;
-    }
-    return mx;
+int max(Row * A, int s) {
+  int mx = A[0].i;
+  for (int i = 1; i < s; ++i) {
+    if (A[i].i > mx) mx = A[i].i;
+  }
+  return mx;
 }
 
-void counting_sort(Row* A, int s, int k){
-    Row *B=new Row[s];
-    int *F=new int[10];
-    int i;
-    for(i=0;i<10;++i)F[i]=0;
+void counting_sort(Row * A, int s, int k) {
+  Row * B = new Row[s];
+  int * F = new int[10];
+  int i;
+  for (i = 0; i < 10; ++i) F[i] = 0;
 
-    for(i=0;i<s;++i) {
-        F[i_th_dig(A[i].i,k)]++;
-    }
-    for(i=1;i<10;++i) F[i]=F[i]+F[i-1];
-    int t,tm;
-    for(i=s-1;i>=0;--i){
-        t = i_th_dig(A[i].i,k);
-        tm = --F[t];
-        B[tm].c = A[i].c;
-        B[tm].i = A[i].i;
-    }
-    for(i=0;i<s;++i){
-        A[i].c = B[i].c;
-        A[i].i = B[i].i;
-    }
+  for (i = 0; i < s; ++i) {
+    F[i_th_dig(A[i].i, k)]++;
+  }
+  for (i = 1; i < 10; ++i) F[i] = F[i] + F[i - 1];
+  int t, tm;
+  for (i = s - 1; i >= 0; --i) {
+    t = i_th_dig(A[i].i, k);
+    tm = --F[t];
+    B[tm].c = A[i].c;
+    B[tm].i = A[i].i;
+  }
+  for (i = 0; i < s; ++i) {
+    A[i].c = B[i].c;
+    A[i].i = B[i].i;
+  }
 }
 
-void radix_sort(Row* A,int s){
-    int nod = num_dig(max(A,s));
-    for(int i=1;i<=nod;++i){
-        counting_sort(A,s,i);
-    }
+void radix_sort(Row * A, int s) {
+  int nod = num_dig(max(A, s));
+  for (int i = 1; i <= nod; ++i) {
+    counting_sort(A, s, i);
+  }
 }

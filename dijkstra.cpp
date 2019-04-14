@@ -7,14 +7,9 @@
 //============================================================================
 
 #include<iostream>
-
 #include<cstdlib>
-
 #include<ctime>
-
 #include<iomanip>
-
-#include <vector>
 
 using namespace std;
 
@@ -28,7 +23,6 @@ void allocate(int ** & , int);
 void populate(int ** matrix, int s, int low, int high, int parcentage);
 int max(int ** matrix, int s);
 int num_dig(int n);
-void select(int & s, int & d, int n);
 void dijkstra(int ** G, int n, int s, int d);
 int minVertex(Vertex * vertex, int n);
 void print_path(int s, int d, Vertex * & vertex);
@@ -37,31 +31,26 @@ void display(int ** matrix, int s, int mx);
 void random(int & s, int & d, int n);
 
 int main() {
-  int ** matrix;
-  int n, p, low, high, source, dest;
-  bool desicion = false;
-  cout << "Number of Vertex :";
-  cout << "percentage of Edges(1-100): ";
-  cout << "Lowest weight :";
-  cout << "Highest weight :";
-  cin >> n >> p >> low >> high;
+    int ** matrix;
+    int n, p, low, high, source, dest;
+    bool desicion = false;
+    cout << "Number of Vertex :"<<endl;;
+    cout << "percentage of Edges(1-100): "<<endl;
+    cout << "Lowest weight :"<<endl;
+    cout << "Highest weight :"<<endl;
+    cin >> n >> p >> low >> high;
 
-  allocate(matrix, n);
-  populate(matrix, n, low, high, p);
-  display(matrix, n, max(matrix, n));
-  int ch;
+    allocate(matrix, n);
+    populate(matrix, n, low, high, p);
+    display(matrix, n, max(matrix, n));
+    int ch;
 
-  cout << "1. select source & destination. " << endl;
-  cout << "2. Random source & destination" << endl;
-  cout << "3. exit." << endl;
-  cin >> ch;
-  if (ch == 1) {
-    select(source, dest, n);
+    cout << "Enter Source And Destination: " << endl;
+    cin >> source>>dest;
+    if(source<n&&dest<n)
     dijkstra(matrix, n, source, dest);
-  } else if (ch == 2) {
-    random(source, dest, n);
-    dijkstra(matrix, n, source, dest);
-  } else
+    else
+        cout<<"Invalid Source And Destination"<<endl;
     return 0;
 }
 
@@ -73,12 +62,13 @@ void allocate(int ** & matrix, int sz) {
 
 void populate(int ** matrix, int s, int low, int high, int parcentage) {
 
-  int count = 0;
+  int c = 0;
   double edges = parcentage / 100.0;
   int max_edges = (s * (s - 1)) / 2;
-  double estimated_edges = (parcentage * max_edges) / 100.00;
+  double edges_needed = (parcentage * max_edges) / 100.00;
 
-  if ((estimated_edges - (int) estimated_edges) >= 0.50) estimated_edges = (int) estimated_edges + 1;
+  if((edges_needed - (int) edges_needed) >= 0.50)           //Rounding the edges for random seeding
+    edges_needed = (int) edges_needed + 1;
 
   cout << "Please Wait..........";
   while (true) {
@@ -93,16 +83,16 @@ void populate(int ** matrix, int s, int low, int high, int parcentage) {
           double val = (double) rand() / RAND_MAX;
           if (val <= edges) {
             matrix[i][j] = low + rand() % (high + 1 - low);
-            count++;
+            c++;
           } else {
             matrix[i][j] = -1;
           }
         }
       }
     }
-    if (count == (int) estimated_edges)
+    if (c == (int) edges_needed)
       break;
-    count = 0;
+    c = 0;
   }
 }
 
@@ -129,25 +119,6 @@ void display(int ** matrix, int s, int mx) {
     }
     cout << endl;
   }
-}
-
-void select(int & s, int & d, int n) {
-  cout << "Enter source & destination between " << "1 to " << n << endl;
-  cout << "Enter source node :";
-  cin >> s;
-  cout << "Enter destination node :";
-  cin >> d;
-
-  while (s < 1 || s > n || d < 1 || d > n) {
-    cout << "Invalid!!" << endl;
-    cout << "Enter source & destination between " << "1 to " << n << endl;
-    cout << "Enter source node :";
-    cin >> s;
-    cout << "Enter destination node :";
-    cin >> d;
-  }
-  s = s - 1;
-  d = d - 1;
 }
 
 void random(int & s, int & d, int n) {
@@ -209,7 +180,7 @@ int minVertex(Vertex * Vertex, int n) {
 
   for (int i = 0; i < n; i++) {
     if (!Vertex[i].flag && (minVertex == -1 || (Vertex[i].cost >= 0 && Vertex[minVertex].cost == -1) ||
-        (Vertex[i].cost >= 0 && Vertex[minVertex].cost >= 0 && Vertex[i].cost <= Vertex[mflainVertex].cost))) {
+        (Vertex[i].cost >= 0 && Vertex[minVertex].cost >= 0 && Vertex[i].cost <= Vertex[minVertex].cost))) {
       minVertex = i;
     }
   }
@@ -223,36 +194,14 @@ void print(int source, Vertex * & vertex, int par) {
   cout << vertex[par].parent << " => ";
 }
 
-void tervarsal(Vertex * vert, int s, int dest) {
-  if (dest != s) {
-    tervarsal(vert, s, vert[dest].parent);
-    cout << vert[dest].parent << endl;
-  }
+void tervarsal(Vertex* vert, int s, int a) {
+    if(s!=a)
+        tervarsal(vert, s, vert[a].parent);
+    cout<< a+1 <<" > ";
 }
 
 void print_path(int s, int d, Vertex * & vertex) {
-  cout << "Destination from " << s + 1 << " to Source" << d + 1 << endl;
-  vector < int > p;
-  int a = d;
-  cout << "total cost :" << vertex[d].cost << endl;
-  cout << "recur" << endl;
-  bool done = false;
-  //tervarsal(vertex, s, d);
-  cout << "recur" << endl;
-  cout << "while" << endl;
-  while (true) {
-    p.push_back(vertex[a].parent);
-    cout << vertex[a].parent << endl;
-    a = vertex[a].parent;
-    if (a == s) {
-      break;
-    }
-  }
-  cout << "while" << endl;
-
-  cout << "path: ";
-  for (vector < int > ::iterator it = p.begin(); it != p.end(); it++)
-    cout << * it + 1 << " > ";
-
-  cout << d + 1 << endl;
+  cout << "Destination: " << s + 1 << "  Source:  " << d + 1 << endl;
+  cout << "Total Cost: " << vertex[d].cost << endl;
+  tervarsal(vertex, s, d);
 }

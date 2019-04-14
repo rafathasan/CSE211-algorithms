@@ -209,7 +209,7 @@ int minVertex(Vertex * Vertex, int n) {
 
   for (int i = 0; i < n; i++) {
     if (!Vertex[i].flag && (minVertex == -1 || (Vertex[i].cost >= 0 && Vertex[minVertex].cost == -1) ||
-        (Vertex[i].cost >= 0 && Vertex[minVertex].cost >= 0 && Vertex[i].cost <= Vertex[minVertex].cost))) {
+        (Vertex[i].cost >= 0 && Vertex[minVertex].cost >= 0 && Vertex[i].cost <= Vertex[mflainVertex].cost))) {
       minVertex = i;
     }
   }

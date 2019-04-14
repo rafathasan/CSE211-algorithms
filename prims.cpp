@@ -17,10 +17,9 @@
 using namespace std;
 
 void allocate(int ** & , int);
-void populate(int ** X, int s, int low, int high, int parcentage);
+void populate(int ** X, int s, int low, int high);
 void display(int ** X, int s, int mx);
-int max(int ** X, int s);
-int num_dig(int n);
+int max(int ** matrix, int s);
 void primsMST(int ** X, int s);
 void insertVertex(int * mstSet, int s, int val);
 bool isExist(int * mstSet, int s, int val);
@@ -45,14 +44,12 @@ int main() {
   int n, p, low, high;
   cout << "Number of Vertex :";
   cin >> n;
-  cout << "percentage of Edges(50-100): ";
-  cin >> p;
   cout << "Lowest weight :";
   cin >> low;
   cout << "Highest weight :";
   cin >> high;
   allocate(matrix, n);
-  populate(matrix, n, low, high, p);
+  populate(matrix, n, low, high);
   display(matrix, n, max(matrix, n));
   primsMST(matrix, n);
   return 0;
@@ -102,55 +99,24 @@ int printMST(int * parent, int s, int ** X) {
     cout << parent[i] << " - " << i << "\t" << X[i][parent[i]] << endl;
 }
 
-void populate(int ** X, int s, int low, int high, int parcentage) {
-
-  int count = 0;
-  double edges = parcentage / 100.0;
-  int max_edges = (s * (s - 1)) / 2;
-  double estimated_edges = (parcentage * max_edges) / 100.00;
-
-  if ((estimated_edges - (int) estimated_edges) >= 0.50) estimated_edges = (int) estimated_edges + 1;
-
-  cout << "Please Wait..........";
-  while (true) {
-    srand(time(0));
-    for (int i = 0; i < s; i++) {
-      for (int j = 0; j < s; j++) {
-        if (j < i) {
-          X[i][j] = X[j][i];
-        } else if (j > i) {
-          double val = (double) rand() / RAND_MAX;
-          if (val <= edges) {
-            X[i][j] = rand() % (high - low + 1) + low;
-            count++;
-          } else {
-            X[i][j] = -1;
-          }
-        } else {
-          X[i][j] = 0;
-        }
-
-      }
-    }
-    if (count == (int) estimated_edges)
-      break;
-    count = 0;
-  }
-}
-
-int max(int ** X, int s) {
-  int mx = X[0][0];
+int max(int ** matrix, int s) {
+  int mx = matrix[0][0];
   for (int i = 0; i < s; i++) {
     for (int j = 0; j < s; j++) {
-      if (X[i][j] > mx) mx = X[i][j];
+      if (matrix[i][j] > mx) mx = matrix[i][j];
     }
   }
   return mx;
 }
 
-int num_dig(int n) {
-  if (n < 10) return 1;
-  return 1 + num_dig(n / 10);
+void populate(int ** X, int s, int low, int high) {
+    for (int i = 0; i < s; ++i)
+    {
+        for (int j = 0; j < s; ++j)
+        {
+            x[i][j] = rand() % (high - low + 1) + low;
+        }
+    }
 }
 
 void allocate(int ** & X, int sz) {
@@ -159,11 +125,16 @@ void allocate(int ** & X, int sz) {
     X[i] = new int[sz];
 }
 
+int num_dig(int n) {
+  if (n < 10) return 1;
+  return 1 + num_dig(n / 10);
+}
+
 void display(int ** X, int s, int mx) {
   cout << endl;
   for (int i = 0; i < s; i++) {
     for (int j = 0; j < s; j++) {
-      cout << setw(num_dig(mx) + 2) << X[i][j];
+      cout << setw(num_dig(mx) + 2) <<X[i][j];
     }
     cout << endl;
   }

@@ -18,8 +18,9 @@ int main() {
   char ** sign;
   string words[2];
 
-  getline(cin, words[0]);
-  getline(cin, words[1]);
+  cin>>words[0]>>words[1];
+  //getline(cin, words[0]);
+  //getline(cin, words[1]);
 
   int x = words[0].length();
   int y = words[1].length();
@@ -41,14 +42,14 @@ int main() {
       sign[i][j] = '0';
     }
   }
-
+  mapping(ary, sign, words, x, y);
   for (int i = 0; i < x + 1; i++) {
     for (int j = 0; j < y + 1; j++) {
       cout << ary[i][j] << " ";
     }
     cout << endl;
   }
-  mapping(ary, sign, words, x, y);
+
 
   for (int i = 0; i < x + 1; i++) {
     for (int j = 0; j < y + 1; j++) {
@@ -60,7 +61,7 @@ int main() {
   return 0;
 }
 
-void print(char ** & sign, string * words, int x, int y) {
+void print(char**& sign, string * words, int x, int y) {
   if (sign[x][y] == 'D') {
     print(sign, words, x - 1, y - 1);
     cout << words[0][x - 1];
@@ -87,7 +88,7 @@ void mapping(int ** & ary, char ** & sign, string * words, int x, int y) {
           sign[i][j] = 'L';
         } else if (ary[i][j - 1] == ary[i - 1][j]) {
           ary[i][j] = ary[i][j - 1];
-          sign[i][j] = 'L';
+          sign[i][j] = 'U';
         } else {
           ary[i][j] = ary[i - 1][j];
           sign[i][j] = 'U';

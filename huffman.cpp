@@ -1,7 +1,7 @@
 //============================================================================
 // Name        : Huffman.cpp
 // Author      : Rafat Hasan
-// Github      : github.com/rafathasan/Algorithm-Project/blob/master/huffman
+// Github      : github.com/rafathasan/Algorithm-Project/blob/master/huffman.cpp
 // Copyright   : GPLv3
 // Description : HuffmanAlgorithm(Array Based) in C++, Ansi-style
 //============================================================================
@@ -12,8 +12,8 @@
 using namespace std;
 
 struct Row {
-  string c; //represent Binary Code also letter combination
-  int i; //represent letter also frequency
+  string c; 											//represent Binary Code also letter combination
+  int i; 												//represent letter also frequency
 };
 
 void initialize_tables(int * feq, Row * & feqRows, int ansii, int & h);
@@ -37,10 +37,10 @@ void readMetaData(Row * srtTable, int & t);
 
 int main() {
   const int ansii = 128;
-  int * feq = new int[128]; //letter frequency Table
-  Row * feqRows; //Main Array (Heap Tree)
-  string * huffTable = new string[ansii]; //Binary Code table
-  int t; //Distinct letter size
+  int * feq = new int[128]; 						//letter frequency Table
+  Row * feqRows; 									//Main Array (Heap Tree)
+  string * huffTable = new string[ansii]; 			//Binary Code table
+  int t; 											//Distinct letter size
 
   initialize_feq(feq, ansii);
   populateFeq(feq);
@@ -82,9 +82,9 @@ void writeMetaData(int * feq, int ansii, Row * srtTable, int t) {
       if (feq[i] > 0)
         out << (char) i << "    =>    " << feq[i] << "\n";
     }
-    //writing binary char by char
+    														//writing binary char by char
   }
-  if (out.fail()) //checking access and end of file
+  if (out.fail()) 											//checking access and end of file
     cout << "error reading decoded.txt" << endl;
   out.close();
 
@@ -95,9 +95,9 @@ void writeMetaData(int * feq, int ansii, Row * srtTable, int t) {
     for (int i = 0; i < t; ++i) {
       out << (char) srtTable[i].i << "    =>    " << srtTable[i].c << "\n";
     }
-    //writing binary char by char
+    														//writing binary char by char
   }
-  if (out.fail()) //checking access and end of file
+  if (out.fail()) 											//checking access and end of file
     cout << "error reading decoded.txt" << endl;
   out.close();
 }
@@ -107,7 +107,7 @@ void constructBinaryTable(Row * feqRows, int t, string * & huffTable, int ansii)
   for (int i = 0; i < ansii; ++i) {
     huffTable[i] = "";
   }
-  int x, y; //x- 1st lowest index, y- 2nd lowest index
+  int x, y; 												//x- 1st lowest index, y- 2nd lowest index
   for (int i = 0; i < t; ++i) {
     x = findMin(feqRows, t, -1);
     y = findMin(feqRows, t, x);
@@ -126,7 +126,7 @@ void constructBinaryTable(Row * feqRows, int t, string * & huffTable, int ansii)
 bool isEqual(string x, string y) {
   bool f = true;
   bool k = true;
-  for (int i = 0; f && k; ++i) {
+  for (int i = 0; f && k; ++i) {					//matching possible condition to fail
     if (x[i] == '\0') f = false;
     if (y[i] == '\0') k = false;
     if (f != k) return false;
@@ -136,8 +136,7 @@ bool isEqual(string x, string y) {
 }
 
 int isMatched(Row * srtTable, int ansii, string str, int t) {
-  for (int i = 0; i < t; ++i) {
-    //if(isEqual(srtTable[i].c, str)) return i;
+  for (int i = 0; i < t; ++i) {							//if(isEqual(srtTable[i].c, str)) return i;												
     if (!srtTable[i].c.compare(str)) return srtTable[i].i;
   }
   return -1;
@@ -151,7 +150,7 @@ void decodeText(Row * srtTable, int ansii, int t) {
     string str = "";
     int val;
     while ( in .good()) {
-      in .get(c);
+      in .get(c);										//reading char by char while writing decoded text
       str = str + c;
       val = isMatched(srtTable, ansii, str, t);
       if (val != -1) {
@@ -159,10 +158,10 @@ void decodeText(Row * srtTable, int ansii, int t) {
         out.put((char) val);
         str = "";
         val = -1;
-      } //writing binary char by char
+      } 												//writing binary char by char
     }
   }
-  if (! in .eof() && in .fail() || out.fail()) //checking access and end of file
+  if (! in .eof() && in .fail() || out.fail()) 			//checking access and end of file
     cout << "error reading binary.txt, decoded.txt" << endl; in .close();
 }
 
@@ -173,10 +172,10 @@ void encodeText(string * huffTable) {
   if ( in .is_open() && out.is_open()) {
     while ( in .good()) {
       in .get(c);
-      out << huffTable[(int) c]; //writing binary char by char
+      out << huffTable[(int) c]; 						//writing binary char by char
     }
   }
-  if (! in .eof() && in .fail() || out.fail()) //checking access and end of file
+  if (! in .eof() && in .fail() || out.fail()) 			//checking access and end of file
     cout << "error reading text.txt" << endl; in .close();
 }
 
@@ -190,7 +189,7 @@ void addString(string * & ary, string s, char c) {
 }
 
 int findMin(Row * ary, int s, int ignore) {
-  int min = INT_MAX;
+  int min = INT_MAX;								//finding minimum key in array
   int idx = -1;
   for (int i = 0; i < s; ++i) {
     if (i != ignore) {
@@ -210,10 +209,10 @@ void populateFeq(int * feq) {
   if ( in .is_open()) {
     while ( in .good()) {
       in .get(c);
-      feq[(int) c]++; //reading char by char and incrementing frequency table
+      feq[(int) c]++; 								//reading char by char and incrementing frequency table
     }
   }
-  if (! in .eof() && in .fail()) //checking access and end of file
+  if (! in .eof() && in .fail()) 					//checking access and end of file
     cout << "error reading text.txt" << endl; in .close();
 }
 
@@ -239,12 +238,13 @@ void initialize_tables(int * feq, Row * & feqRows, int ansii, int & h) {
 void readMetaData(Row * srtTable, int & t) {
   ifstream in ("codeTable.txt");
   string dump;
-  getline( in , dump);
+  getline( in , dump);									//skipping 1st two line
   getline( in , dump);
   while (getline( in , dump))
-    t++;
+    t++;												//counting the table
 
-  t = t / 2;
+  t = t / 2;											//bacause of whitespaces, it counts twice
+  														//that is why dividing by two
   srtTable = new Row[t]; in .seekg(0, std::ios::beg);
   getline( in , dump);
   getline( in , dump);
@@ -255,27 +255,27 @@ void readMetaData(Row * srtTable, int & t) {
       c++;
     }
   }
-  if (! in .eof() && in .fail()) //checking access and end of file
+  if (! in .eof() && in .fail()) 						//checking access and end of file
     cout << "error reading codeTable.txt" << endl; in .close();
 
 }
 
 void initialize_feq(int * feq, int ansii) {
-  for (int i = 0; i < ansii; ++i)
+  for (int i = 0; i < ansii; ++i)						//populating ascii table to array
     feq[i] = 0;
 }
 
-int i_th_dig(int n, int k) {
+int i_th_dig(int n, int k) {							//returning the i th digit
   for (int i = 1; i < k; ++i) n /= 10;
   return n % 10;
 }
 
-int num_dig(int n) {
+int num_dig(int n) {									//getting digit length
   if (n < 10) return 1;
   return 1 + num_dig(n / 10);
 }
 
-int max(Row * A, int s) {
+int max(Row * A, int s) {								//finding maximum value
   int mx = A[0].i;
   for (int i = 1; i < s; ++i) {
     if (A[i].i > mx) mx = A[i].i;
@@ -287,12 +287,12 @@ void counting_sort(Row * A, int s, int k) {
   Row * B = new Row[s];
   int * F = new int[10];
   int i;
-  for (i = 0; i < 10; ++i) F[i] = 0;
+  for (i = 0; i < 10; ++i) F[i] = 0;					//initialize 0 to 9 array
 
   for (i = 0; i < s; ++i) {
-    F[i_th_dig(A[i].i, k)]++;
+    F[i_th_dig(A[i].i, k)]++;							//counting digit places and increment
   }
-  for (i = 1; i < 10; ++i) F[i] = F[i] + F[i - 1];
+  for (i = 1; i < 10; ++i) F[i] = F[i] + F[i - 1];		//adding value from previous key
   int t, tm;
   for (i = s - 1; i >= 0; --i) {
     t = i_th_dig(A[i].i, k);
@@ -307,7 +307,7 @@ void counting_sort(Row * A, int s, int k) {
 }
 
 void radix_sort(Row * A, int s) {
-  int nod = num_dig(max(A, s));
+  int nod = num_dig(max(A, s));						//getting max digit length
   for (int i = 1; i <= nod; ++i) {
     counting_sort(A, s, i);
   }

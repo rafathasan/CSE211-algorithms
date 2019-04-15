@@ -20,7 +20,7 @@ int main() {
   int ** ary;
   char ** sign;
   string words[2];
-
+  cout<<"Enter Two words"<<endl;
   cin>>words[0]>>words[1];
   //getline(cin, words[0]);
   //getline(cin, words[1]);
@@ -31,8 +31,8 @@ int main() {
   cout << x << endl;
   cout << y << endl;
 
-  void allocate(ary, sign, x, y);
-  void initialize(ary, sign, x, y);
+  allocate(ary, sign, x, y);
+  initialize(ary, sign, x, y);
 
   mapping(ary, sign, words, x, y);
   display(ary, sign, x, y);
@@ -74,7 +74,7 @@ void allocate(int**& ary, char**& sign, int x,int y){
   }
 }
 
-void print(char**& sign, string * words, int x, int y) { 
+void print(char**& sign, string * words, int x, int y) {
                                                     //printing the Longest Common Subsequence by using char array
   if (sign[x][y] == 'D') {
     print(sign, words, x - 1, y - 1);
@@ -111,3 +111,41 @@ void mapping(int ** & ary, char ** & sign, string * words, int x, int y) {
     }
   }
 }
+
+
+// Enter Two words
+// GHEBBHBCECBB
+// DABEAFBB
+// 12
+// 8
+// size: 12 8
+// 
+// 0 0 0 0 0 0 0 0 0
+// 0 0 0 0 0 0 0 0 0
+// 0 0 0 0 0 0 0 0 0
+// 0 0 0 0 1 1 1 1 1
+// 0 0 0 1 1 1 1 2 2
+// 0 0 0 1 1 1 1 2 3
+// 0 0 0 1 1 1 1 2 3
+// 0 0 0 1 1 1 1 2 3
+// 0 0 0 1 1 1 1 2 3
+// 0 0 0 1 2 2 2 2 3
+// 0 0 0 1 2 2 2 2 3
+// 0 0 0 1 2 2 2 3 3
+// 0 0 0 1 2 2 2 3 4
+//
+// 0 0 0 0 0 0 0 0 0
+// 0 U U U U U U U U
+// 0 U U U U U U U U
+// 0 U U U D L L L L
+// 0 U U D U U U D D
+// 0 U U D U U U D D
+// 0 U U U U U U U U
+// 0 U U D U U U D D
+// 0 U U U U U U U U
+// 0 U U U D L L U U
+// 0 U U U U U U U U
+// 0 U U D U U U D D
+// 0 U U D U U U D D
+//
+// BEBB

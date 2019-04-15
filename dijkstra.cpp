@@ -3,7 +3,7 @@
 // Author      : Rafat Hasan
 // Github     : https://github.com/rafathasan/Algorithm-Project/blob/master/dijkstra.cpp
 // Copyright   : GPLv3
-// Description : Dijkstra in C++, Ansi-style
+// Description : Dijkstra's algorithm in C++, Ansi-style
 //============================================================================
 
 #include<iostream>
@@ -46,7 +46,7 @@ int main() {
     cout << "Enter Source And Destination: " << endl;
     cin >> source>>dest;
     if(source<n&&dest<n)
-    dijkstra(matrix, n, source, dest);
+    dijkstra(matrix, n, source-1, dest-1);
     else
         cout<<"Invalid Source And Destination"<<endl;
     return 0;
@@ -133,7 +133,7 @@ void dijkstra(int ** X, int n, int s, int d) {
   vertex[s].flag = false;
 
   for (int i = 0; i < n; i++) {
-    int min = minVertex(vertex, n);                   //setting the minimum 
+    int min = minVertex(vertex, n);                   //setting the minimum
     if (vertex[min].cost == -1)
       break;
     else if (min == d) {
@@ -183,3 +183,40 @@ void print_path(int s, int d, Vertex * & vertex) {    //path printing by calling
   cout << "Total Cost: " << vertex[d].cost << endl;
   tervarsal(vertex, s, d);
 }
+
+
+
+
+
+
+
+
+
+
+// Number of Vertex : 15
+// percentage of Edges(1-100): 40
+// Lowest weight : 5
+// Highest weight : 30
+//
+// Please Wait..........
+//    0  -1  14  29  -1  -1  -1  -1  -1  -1  -1  -1  16  -1  30
+//   -1   0  16   8  18  -1  24  -1  -1  23  -1  16  -1  19  -1
+//   14  16   0  -1  -1  -1  22  14  -1  -1  -1  -1  -1  29  21
+//   29   8  -1   0  30  25  -1  -1  -1  -1  18  11  -1  15  16
+//   -1  18  -1  30   0  -1  30   9  17  -1  -1   8  -1  -1  -1
+//   -1  -1  -1  25  -1   0  -1  19  27  -1  -1  15  -1  -1  19
+//   -1  24  22  -1  30  -1   0  -1  -1  -1  -1   6  -1  24  -1
+//   -1  -1  14  -1   9  19  -1   0  -1  18  19  10  -1  13   7
+//   -1  -1  -1  -1  17  27  -1  -1   0  -1  -1  -1  -1  -1  23
+//   -1  23  -1  -1  -1  -1  -1  18  -1   0  -1  -1  -1  -1  10
+//   -1  -1  -1  18  -1  -1  -1  19  -1  -1   0   5  29  -1  -1
+//   -1  16  -1  11   8  15   6  10  -1  -1   5   0   5  -1  -1
+//   16  -1  -1  -1  -1  -1  -1  -1  -1  -1  29   5   0  -1  20
+//   -1  19  29  15  -1  -1  24  13  -1  -1  -1  -1  -1   0  -1
+//   30  -1  21  16  -1  19  -1   7  23  10  -1  -1  20  -1   0
+//
+// Enter Source And Destination:
+// 5 15
+// Destination: 5  Source:  15
+// Total Cost: 16
+// 5 > 8 > 15 >
